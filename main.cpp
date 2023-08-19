@@ -25,22 +25,25 @@ int64_t time_now_ms(){
 
 int main(){
     mtg::graph::DBGSBWT dbg_sbwt;
-    dbg_sbwt.load("coli3.sbwt");
+    dbg_sbwt.load("../SBWT/coli3682.sbwt");
 
-    vector<string> reads = get_reads("/home/niklas/data/ERR434259_1_prefix.fastq");
+    vector<string> reads = get_reads("../../data/ERR434259_1_prefix.fastq");
     int64_t n_kmers_processed = 0;
     int64_t n_hits = 0;
 
-    int64_t t0 = time_now_ms();
-    for(auto S : reads){
-        dbg_sbwt.map_to_nodes_sequentially(S, [&n_kmers_processed, &n_hits](int64_t node_id){
+    auto callback = [&n_kmers_processed, &n_hits](int64_t node_id){
             n_kmers_processed++;
             n_hits += (node_id != -1);
-        });
+    };
+
+    int64_t t0 = time_now_ms();
+    for(const string& S : reads){
+        dbg_sbwt.map_to_nodes_sequentially(S, callback);
     }
     int64_t t1 = time_now_ms();
 
     int64_t elapsed_us = (t1-t0) * 1000;
     cout << (double) elapsed_us / n_kmers_processed << " us / k-mer" << endl;
+    cout << "k-mers processed: " << n_kmers_processed << endl;
     cout << "Hit rate: " << (double) n_hits / n_kmers_processed << endl;
 }

@@ -1,5 +1,5 @@
-#ifndef __DBG_HASH_FAST_HPP__
-#define __DBG_HASH_FAST_HPP__
+#ifndef __DBG_SBWT_HPP__
+#define __DBG_SBWT_HPP__
 
 #include <iostream>
 #include <exception>
